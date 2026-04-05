@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Atmosféricos Sur – José C. Paz</title>
+<!-- Google Analytics GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3YMGWFFM8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3YMGWFFM8');
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -720,6 +728,14 @@
   const answers = { q1: '', q2: '', q3: '' };
   const PHONE = '5491166192080';
 
+  function track(name, params) {
+    if (typeof gtag !== 'undefined') gtag('event', name, params || {});
+  }
+
+  window.addEventListener('load', function() {
+    track('funnel_inicio', { step: 1 });
+  });
+
   function selectOption(el, key, value) {
     const container = el.closest('.options');
     container.querySelectorAll('.option').forEach(o => {
@@ -729,8 +745,14 @@
     el.classList.add('selected');
     el.querySelector('.option-check').textContent = '✓';
     answers[key] = value;
-    if (key === 'q1') document.getElementById('btn1').disabled = false;
-    if (key === 'q3') document.getElementById('btn3').disabled = false;
+    if (key === 'q1') {
+      document.getElementById('btn1').disabled = false;
+      track('servicio_seleccionado', { servicio: value });
+    }
+    if (key === 'q3') {
+      document.getElementById('btn3').disabled = false;
+      track('urgencia_seleccionada', { urgencia: value });
+    }
   }
 
   function checkQ2() {
@@ -740,6 +762,7 @@
   }
 
   function goToStep(step) {
+    track('funnel_paso', { step: step });
     ['step1','step2','step3'].forEach(id => document.getElementById(id).classList.add('hidden'));
 
     const dots  = ['dot1','dot2','dot3'].map(id => document.getElementById(id));
@@ -770,9 +793,13 @@
     const cuando   = answers.q3 || 'pronto';
 
     const msg = encodeURIComponent(
-      `Hola! Consulto por: ${servicio}.\nBarrio: ${barrio}.\nCuándo: ${cuando}.`
+      'Hola! Consulto por: ' + servicio + '.
+Barrio: ' + barrio + '.
+Cuándo: ' + cuando + '.'
     );
-    document.getElementById('waLink').href = `https://wa.me/${PHONE}?text=${msg}`;
+    document.getElementById('waLink').href = 'https://wa.me/' + PHONE + '?text=' + msg;
+
+    track('whatsapp_click', { servicio: servicio, barrio: barrio, urgencia: cuando });
 
     ['dot1','dot2','dot3'].forEach(id => {
       const d = document.getElementById(id);
