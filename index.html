@@ -194,22 +194,19 @@
   .trust-item { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 500; color: var(--muted); }
   .trust-item .ti-icon { color: var(--accent); font-size: 15px; }
 
-  /* ===== TESTIMONIALS ===== */
-  .testimonials {
-    display: flex; gap: 12px; padding: 18px 24px; max-width: 680px; margin: 0 auto;
-    position: relative; z-index: 1; animation: fadeUp 0.5s 0.5s ease both;
-    overflow-x: auto; -webkit-overflow-scrolling: touch;
+  /* ===== CONFIRMACIÓN AUTO-ADVANCE ===== */
+  .option.confirmed {
+    border-color: var(--green); background: rgba(39,196,117,0.08); color: var(--white);
+    transition: border-color 0.25s, background 0.25s;
   }
-  .testimonial {
-    flex: 1; min-width: 240px;
-    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
-    padding: 16px 18px; font-size: 14px; line-height: 1.55;
+  .option.confirmed .option-check { background: var(--green); border-color: var(--green); transition: all 0.25s; }
+  .option.confirmed::before { background: var(--green); transform: scaleY(1); }
+
+  .card.confirming {
+    animation: confirmFade 0.35s 0.4s ease forwards;
   }
-  .testimonial-text { color: var(--text); font-style: italic; margin-bottom: 10px; }
-  .testimonial-text::before { content: '\201C'; color: var(--accent); font-size: 20px; font-weight: 700; margin-right: 2px; }
-  .testimonial-author {
-    font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 500;
-    letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+  @keyframes confirmFade {
+    to { opacity: 0.4; transform: scale(0.98) translateY(-6px); }
   }
 
   /* ===== CONTAINER ===== */
@@ -431,9 +428,7 @@
     .card-header { padding: 16px 20px 14px; }
     .card-body { padding: 18px 20px 22px; }
     .trust-strip { gap: 8px 14px; padding: 18px 20px; }
-    .testimonials { padding: 14px 18px; gap: 10px; }
-    .testimonial { min-width: 220px; padding: 14px 16px; }
-    .wa-float { bottom: 16px; right: 16px; width: 54px; height: 54px; }
+.wa-float { bottom: 16px; right: 16px; width: 54px; height: 54px; }
     .wa-float svg { width: 26px; height: 26px; }
     .wa-float-label { bottom: 24px; right: 78px; font-size: 12px; padding: 6px 12px; }
   }
@@ -463,17 +458,6 @@
   <div class="trust-item"><span class="ti-icon" aria-hidden="true">🏅</span> 45 años de experiencia</div>
   <div class="trust-item"><span class="ti-icon" aria-hidden="true">📍</span> José C. Paz</div>
   <div class="trust-item"><span class="ti-icon" aria-hidden="true">🔒</span> Sin compromiso</div>
-</div>
-
-<div class="testimonials" aria-label="Opiniones de clientes">
-  <div class="testimonial">
-    <div class="testimonial-text">Vinieron el mismo día que llamé. Rápidos y profesionales, el pozo quedó impecable.</div>
-    <div class="testimonial-author">Carlos M. — Sol y Verde</div>
-  </div>
-  <div class="testimonial">
-    <div class="testimonial-text">Hace 10 años que los llamo cada vez que necesito. 45 años de experiencia no es casualidad.</div>
-    <div class="testimonial-author">María G. — Barrio Sarmiento</div>
-  </div>
 </div>
 
 <main class="container" id="main-content">
@@ -518,9 +502,6 @@
           <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> No estoy seguro
         </button>
       </div>
-      <button class="btn-primary" id="btn1" disabled aria-label="Continuar al paso 2">
-        Continuar <span aria-hidden="true">→</span>
-      </button>
       <div class="micro-trust" aria-label="Garantías del servicio">
         <div class="mt-item"><span aria-hidden="true">⚡</span> Respuesta rápida</div>
         <div class="mt-item"><span aria-hidden="true">🔒</span> Sin compromiso</div>
@@ -573,7 +554,7 @@
         <label for="otroBarrioInput" class="sr-only">Escribí tu barrio</label>
         <input type="text" class="text-input" id="otroBarrioInput" placeholder="Escribí tu barrio o localidad...">
       </div>
-      <button class="btn-primary" id="btn2" disabled aria-label="Continuar al paso 3">
+      <button class="btn-primary hidden" id="btn2" disabled aria-label="Continuar al paso 3">
         Continuar <span aria-hidden="true">→</span>
       </button>
     </div>
@@ -601,9 +582,6 @@
           <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> Solo estoy averiguando
         </button>
       </div>
-      <button class="btn-primary" id="btn3" disabled aria-label="Enviar consulta y abrir WhatsApp">
-        Hablar por WhatsApp <span aria-hidden="true">📲</span>
-      </button>
     </div>
   </div>
 
@@ -737,9 +715,7 @@
     backs[0].addEventListener('click', function() { goToStep(1); });
     backs[1].addEventListener('click', function() { goToStep(2); });
 
-    document.getElementById('btn1').addEventListener('click', function() { goToStep(2); });
     document.getElementById('btn2').addEventListener('click', function() { goToStep(3); });
-    document.getElementById('btn3').addEventListener('click', function() { showSuccess(); });
   }
 
   // ===== SELECCIÓN DE OPCIONES =====
@@ -758,6 +734,7 @@
     // Manejo especial para "Otro barrio"
     if (key === 'q2' && value === '__otro__') {
       document.getElementById('otroInputWrap').classList.add('visible');
+      document.getElementById('btn2').classList.remove('hidden');
       var otroInput = document.getElementById('otroBarrioInput');
       setTimeout(function() { otroInput.focus(); }, 100);
       answers.q2 = otroInput.value.trim();
@@ -765,23 +742,38 @@
       return;
     } else if (key === 'q2') {
       document.getElementById('otroInputWrap').classList.remove('visible');
+      document.getElementById('btn2').classList.add('hidden');
     }
 
     answers[key] = value;
 
+    // Efecto de confirmación + auto-advance (770ms)
+    function confirmAndAdvance(card, callback, trackName, trackParams) {
+      if (trackName) track(trackName, trackParams);
+      el.classList.add('confirmed');
+      setTimeout(function() { card.classList.add('confirming'); }, 400);
+      setTimeout(callback, 770);
+    }
+
     if (key === 'q1') {
-      document.getElementById('btn1').disabled = false;
-      track('servicio_seleccionado', { servicio: value });
-      setTimeout(function() { goToStep(2); }, 550);
+      confirmAndAdvance(
+        document.getElementById('step1'),
+        function() { goToStep(2); },
+        'servicio_seleccionado', { servicio: value }
+      );
     }
     if (key === 'q2') {
-      document.getElementById('btn2').disabled = false;
-      setTimeout(function() { goToStep(3); }, 550);
+      confirmAndAdvance(
+        document.getElementById('step2'),
+        function() { goToStep(3); }
+      );
     }
     if (key === 'q3') {
-      document.getElementById('btn3').disabled = false;
-      track('urgencia_seleccionada', { urgencia: value });
-      setTimeout(function() { showSuccess(); }, 550);
+      confirmAndAdvance(
+        document.getElementById('step3'),
+        function() { showSuccess(); },
+        'urgencia_seleccionada', { urgencia: value }
+      );
     }
   }
 
@@ -819,6 +811,14 @@
     indicator.setAttribute('aria-valuenow', step);
     indicator.setAttribute('aria-label', 'Progreso del formulario: paso ' + step + ' de 3');
     document.getElementById('liveRegion').textContent = 'Paso ' + step + ' de 3';
+
+    // Limpiar efectos de confirmación en todos los pasos
+    for (var i = 0; i < steps.length; i++) {
+      var card = document.getElementById(steps[i]);
+      card.classList.remove('confirming');
+      var confirmed = card.querySelectorAll('.option.confirmed');
+      for (var j = 0; j < confirmed.length; j++) confirmed[j].classList.remove('confirmed');
+    }
 
     var target = document.getElementById('step' + step);
     if (target) {
