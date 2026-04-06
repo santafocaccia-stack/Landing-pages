@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080909">
 <title>Atmosféricos Sur – Camión Atmosférico en José C. Paz | Desagote y Destapaciones</title>
 <meta name="description" content="Servicio de camión atmosférico en José C. Paz. Desagote de pozos, destapación de cañerías y limpieza de cámaras. 45 años de experiencia. Respondemos el mismo día.">
 <meta name="keywords" content="camión atmosférico, desagote de pozo, cañería tapada, limpieza de cámara, José C. Paz, atmosféricos sur, servicio atmosférico zona norte">
@@ -57,22 +58,18 @@
     "opens": "07:00",
     "closes": "20:00"
   },
-  "priceRange": "$$"
+  "priceRange": "$$",
+  "serviceType": ["Desagote de pozos", "Destapación de cañerías", "Limpieza de cámaras sépticas", "Desagote de cámaras"]
 }
 </script>
 
-<!-- Google Analytics GA4 -->
+<!-- Google Analytics GA4 (async, no bloquea render) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3YMGWFFM8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-Y3YMGWFFM8');
-</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap"></noscript>
 
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -169,6 +166,25 @@
 
   @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
+  /* ===== AVAILABILITY BADGE ===== */
+  .avail-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 14px; font-weight: 500; margin-top: 18px;
+    padding: 8px 14px; border-radius: var(--radius);
+    animation: fadeUp 0.5s 0.4s ease both;
+  }
+  .avail-badge.open {
+    background: var(--green-dim); border: 1px solid rgba(39,196,117,0.25); color: var(--green);
+  }
+  .avail-badge.closed {
+    background: rgba(240,180,41,0.08); border: 1px solid rgba(240,180,41,0.2); color: var(--accent);
+  }
+  .avail-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .avail-badge.open .avail-dot { background: var(--green); animation: blink 1.5s infinite; }
+  .avail-badge.closed .avail-dot { background: var(--accent-dim); }
+
   /* ===== TRUST STRIP ===== */
   .trust-strip {
     display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 20px;
@@ -177,6 +193,24 @@
   }
   .trust-item { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 500; color: var(--muted); }
   .trust-item .ti-icon { color: var(--accent); font-size: 15px; }
+
+  /* ===== TESTIMONIALS ===== */
+  .testimonials {
+    display: flex; gap: 12px; padding: 18px 24px; max-width: 680px; margin: 0 auto;
+    position: relative; z-index: 1; animation: fadeUp 0.5s 0.5s ease both;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+  }
+  .testimonial {
+    flex: 1; min-width: 240px;
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px 18px; font-size: 14px; line-height: 1.55;
+  }
+  .testimonial-text { color: var(--text); font-style: italic; margin-bottom: 10px; }
+  .testimonial-text::before { content: '\201C'; color: var(--accent); font-size: 20px; font-weight: 700; margin-right: 2px; }
+  .testimonial-author {
+    font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+  }
 
   /* ===== CONTAINER ===== */
   .container { max-width: 680px; margin: 0 auto; padding: 36px 24px 80px; position: relative; z-index: 1; }
@@ -245,12 +279,22 @@
   .option-check svg { display: none; width: 12px; height: 12px; }
   .option.selected .option-check svg { display: block; }
 
+  /* ===== OTRO BARRIO INPUT ===== */
+  .otro-input-wrap {
+    overflow: hidden; max-height: 0; opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
+    margin-top: 0;
+  }
+  .otro-input-wrap.visible {
+    max-height: 80px; opacity: 1; margin-top: 12px;
+  }
+
   /* ===== INPUTS ===== */
   .text-input {
     width: 100%; background: var(--card2); border: 1.5px solid var(--border2);
     border-radius: var(--radius); color: var(--white); font-family: 'DM Sans', sans-serif;
     font-size: 16px; padding: 14px 16px; outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s; margin-bottom: 22px; min-height: 52px;
+    transition: border-color 0.2s, box-shadow 0.2s; min-height: 52px;
   }
   .text-input::placeholder { color: var(--muted); }
   .text-input:focus { border-color: var(--accent-dim); box-shadow: 0 0 0 3px var(--accent-glow); }
@@ -365,6 +409,21 @@
 
   .hidden { display: none !important; }
 
+  .btn-back {
+    background: none; border: none; color: var(--muted);
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+    cursor: pointer; padding: 4px 8px; border-radius: var(--radius);
+    transition: color 0.18s; margin-left: auto; flex-shrink: 0;
+  }
+  .btn-back:hover { color: var(--text); }
+  .btn-back:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0;
+    margin: -1px; overflow: hidden; clip: rect(0,0,0,0);
+    white-space: nowrap; border: 0;
+  }
+
   /* ===== RESPONSIVE ===== */
   @media (max-width: 480px) {
     .hero-inner { padding: 40px 20px 36px; }
@@ -372,6 +431,8 @@
     .card-header { padding: 16px 20px 14px; }
     .card-body { padding: 18px 20px 22px; }
     .trust-strip { gap: 8px 14px; padding: 18px 20px; }
+    .testimonials { padding: 14px 18px; gap: 10px; }
+    .testimonial { min-width: 220px; padding: 14px 16px; }
     .wa-float { bottom: 16px; right: 16px; width: 54px; height: 54px; }
     .wa-float svg { width: 26px; height: 26px; }
     .wa-float-label { bottom: 24px; right: 78px; font-size: 12px; padding: 6px 12px; }
@@ -388,9 +449,10 @@
     <h1>Atmosféricos<span class="accent">Sur</span></h1>
     <div class="hero-divider" aria-hidden="true">Camión atmosférico profesional</div>
     <p class="hero-desc">
-      <strong>¿Tenés un problema urgente?</strong><br>
-      Contestá 3 preguntas rápidas y te contactamos por WhatsApp el mismo día.
+      <strong>Llegamos hoy a tu domicilio.</strong><br>
+      Contestá 3 preguntas rápidas y te contactamos por WhatsApp en minutos.
     </p>
+    <div class="avail-badge" id="availBadge" aria-live="polite"></div>
   </div>
   <div class="hero-truck" aria-hidden="true">🚛</div>
   <div class="hero-clip" aria-hidden="true"></div>
@@ -403,7 +465,19 @@
   <div class="trust-item"><span class="ti-icon" aria-hidden="true">🔒</span> Sin compromiso</div>
 </div>
 
+<div class="testimonials" aria-label="Opiniones de clientes">
+  <div class="testimonial">
+    <div class="testimonial-text">Vinieron el mismo día que llamé. Rápidos y profesionales, el pozo quedó impecable.</div>
+    <div class="testimonial-author">Carlos M. — Sol y Verde</div>
+  </div>
+  <div class="testimonial">
+    <div class="testimonial-text">Hace 10 años que los llamo cada vez que necesito. 45 años de experiencia no es casualidad.</div>
+    <div class="testimonial-author">María G. — Barrio Sarmiento</div>
+  </div>
+</div>
+
 <main class="container" id="main-content">
+<span id="liveRegion" class="sr-only" aria-live="polite" aria-atomic="true"></span>
 
   <div class="step-indicator" id="stepIndicator" role="progressbar" aria-valuenow="1" aria-valuemin="1" aria-valuemax="3" aria-label="Progreso del formulario: paso 1 de 3">
     <div class="step-dot active" id="dot1" aria-current="step">1</div>
@@ -425,26 +499,26 @@
     </div>
     <div class="card-body">
       <div class="options" id="q1options" role="radiogroup" aria-labelledby="q1title">
-        <button class="option" role="radio" aria-checked="false" onclick="selectOption(this, 'q1', 'Pozo lleno')">
+        <button class="option" role="radio" aria-checked="false" tabindex="0" data-key="q1" data-value="Pozo lleno">
           <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> Pozo lleno / desbordando
         </button>
-        <button class="option" role="radio" aria-checked="false" onclick="selectOption(this, 'q1', 'Desagote de pozo')">
+        <button class="option" role="radio" aria-checked="false" tabindex="-1" data-key="q1" data-value="Desagote de pozo">
           <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> Desagote de pozo
         </button>
-        <button class="option" role="radio" aria-checked="false" onclick="selectOption(this, 'q1', 'Caneria tapada')">
+        <button class="option" role="radio" aria-checked="false" tabindex="-1" data-key="q1" data-value="Cañería tapada">
           <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> Cañería tapada
         </button>
-        <button class="option" role="radio" aria-checked="false" onclick="selectOption(this, 'q1', 'Limpieza de camara')">
+        <button class="option" role="radio" aria-checked="false" tabindex="-1" data-key="q1" data-value="Limpieza de cámara">
           <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> Limpieza de cámara
         </button>
-        <button class="option" role="radio" aria-checked="false" onclick="selectOption(this, 'q1', 'Desagote de camara')">
+        <button class="option" role="radio" aria-checked="false" tabindex="-1" data-key="q1" data-value="Desagote de cámara">
           <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> Desagote de cámara
         </button>
-        <button class="option" role="radio" aria-checked="false" onclick="selectOption(this, 'q1', 'No estoy seguro')">
+        <button class="option" role="radio" aria-checked="false" tabindex="-1" data-key="q1" data-value="No estoy seguro">
           <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> No estoy seguro
         </button>
       </div>
-      <button class="btn-primary" id="btn1" onclick="goToStep(2)" disabled aria-label="Continuar al paso 2">
+      <button class="btn-primary" id="btn1" disabled aria-label="Continuar al paso 2">
         Continuar <span aria-hidden="true">→</span>
       </button>
       <div class="micro-trust" aria-label="Garantías del servicio">
@@ -460,31 +534,46 @@
     <div class="card-header">
       <span class="q-number">Pregunta 02</span>
       <span class="q-title" id="q2title">¿En qué barrio está el domicilio?</span>
+      <button class="btn-back" aria-label="Volver al paso 1">← Volver</button>
     </div>
     <div class="card-body">
-      <label for="q2input" class="hidden">Barrio o localidad</label>
-      <input
-        type="text"
-        class="text-input"
-        id="q2input"
-        placeholder="Ej: Sol y Verde, Barrio Sarmiento, Villa Altube..."
-        oninput="checkQ2()"
-        autocomplete="off"
-        list="barrios-list"
-        aria-describedby="q2title"
-      >
-      <datalist id="barrios-list">
-        <option value="Sol y Verde">
-        <option value="Barrio Sarmiento">
-        <option value="Villa Altube">
-        <option value="Centro">
-        <option value="Villa del Parque">
-        <option value="Los Aromos">
-        <option value="San Jorge">
-        <option value="Villa Lucia">
-        <option value="El Triangulo">
-      </datalist>
-      <button class="btn-primary" id="btn2" onclick="goToStep(3)" disabled aria-label="Continuar al paso 3">
+      <div class="options" id="q2options" role="radiogroup" aria-labelledby="q2title">
+        <button class="option" role="radio" aria-checked="false" tabindex="0" data-key="q2" data-value="Sol y Verde">
+          <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> Sol y Verde
+        </button>
+        <button class="option" role="radio" aria-checked="false" tabindex="-1" data-key="q2" data-value="Barrio Sarmiento">
+          <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> Barrio Sarmiento
+        </button>
+        <button class="option" role="radio" aria-checked="false" tabindex="-1" data-key="q2" data-value="Villa Altube">
+          <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> Villa Altube
+        </button>
+        <button class="option" role="radio" aria-checked="false" tabindex="-1" data-key="q2" data-value="Centro">
+          <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> Centro
+        </button>
+        <button class="option" role="radio" aria-checked="false" tabindex="-1" data-key="q2" data-value="Villa del Parque">
+          <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> Villa del Parque
+        </button>
+        <button class="option" role="radio" aria-checked="false" tabindex="-1" data-key="q2" data-value="Los Aromos">
+          <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> Los Aromos
+        </button>
+        <button class="option" role="radio" aria-checked="false" tabindex="-1" data-key="q2" data-value="San Jorge">
+          <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> San Jorge
+        </button>
+        <button class="option" role="radio" aria-checked="false" tabindex="-1" data-key="q2" data-value="Villa Lucia">
+          <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> Villa Lucia
+        </button>
+        <button class="option" role="radio" aria-checked="false" tabindex="-1" data-key="q2" data-value="El Triangulo">
+          <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> El Triangulo
+        </button>
+        <button class="option" role="radio" aria-checked="false" tabindex="-1" data-key="q2" data-value="__otro__" id="btnOtroBarrio">
+          <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> Otro barrio
+        </button>
+      </div>
+      <div class="otro-input-wrap" id="otroInputWrap">
+        <label for="otroBarrioInput" class="sr-only">Escribí tu barrio</label>
+        <input type="text" class="text-input" id="otroBarrioInput" placeholder="Escribí tu barrio o localidad...">
+      </div>
+      <button class="btn-primary" id="btn2" disabled aria-label="Continuar al paso 3">
         Continuar <span aria-hidden="true">→</span>
       </button>
     </div>
@@ -495,23 +584,24 @@
     <div class="card-header">
       <span class="q-number">Pregunta 03</span>
       <span class="q-title" id="q3title">¿Para cuándo necesitás el servicio?</span>
+      <button class="btn-back" aria-label="Volver al paso 2">← Volver</button>
     </div>
     <div class="card-body">
       <div class="options" id="q3options" role="radiogroup" aria-labelledby="q3title">
-        <button class="option" role="radio" aria-checked="false" onclick="selectOption(this, 'q3', 'Lo antes posible')">
+        <button class="option" role="radio" aria-checked="false" tabindex="0" data-key="q3" data-value="Lo antes posible">
           <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> Lo antes posible — es urgente
         </button>
-        <button class="option" role="radio" aria-checked="false" onclick="selectOption(this, 'q3', 'Hoy o manana')">
+        <button class="option" role="radio" aria-checked="false" tabindex="-1" data-key="q3" data-value="Hoy o manana">
           <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> Hoy o mañana
         </button>
-        <button class="option" role="radio" aria-checked="false" onclick="selectOption(this, 'q3', 'Esta semana')">
+        <button class="option" role="radio" aria-checked="false" tabindex="-1" data-key="q3" data-value="Esta semana">
           <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> Esta semana
         </button>
-        <button class="option" role="radio" aria-checked="false" onclick="selectOption(this, 'q3', 'Solo averiguando')">
+        <button class="option" role="radio" aria-checked="false" tabindex="-1" data-key="q3" data-value="Solo averiguando">
           <span class="option-check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="#080909" stroke-width="2"><polyline points="2 6 5 9 10 3"/></svg></span> Solo estoy averiguando
         </button>
       </div>
-      <button class="btn-primary" id="btn3" onclick="showSuccess()" disabled aria-label="Enviar consulta y abrir WhatsApp">
+      <button class="btn-primary" id="btn3" disabled aria-label="Enviar consulta y abrir WhatsApp">
         Hablar por WhatsApp <span aria-hidden="true">📲</span>
       </button>
     </div>
@@ -550,56 +640,171 @@
 <div class="wa-float-label" aria-hidden="true">¿Necesitás ayuda? Escribinos</div>
 
 <script>
+  // GA4 config (movido al final para no bloquear parsing)
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y3YMGWFFM8');
+
   var answers = { q1: '', q2: '', q3: '' };
   var PHONE = '5491166192080';
+  var currentStep = 1;
 
   function track(name, params) {
     if (typeof gtag !== 'undefined') gtag('event', name, params || {});
   }
 
-  window.addEventListener('load', function() {
-    track('funnel_inicio', { step: 1 });
+  // ===== DISPONIBILIDAD DINÁMICA =====
+  function updateAvailability() {
+    var badge = document.getElementById('availBadge');
+    try {
+      var now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }));
+      var day = now.getDay(); // 0=dom, 6=sab
+      var hour = now.getHours();
+      var isOpen = day >= 1 && day <= 6 && hour >= 7 && hour < 20;
+      if (isOpen) {
+        badge.className = 'avail-badge open';
+        badge.innerHTML = '<span class="avail-dot" aria-hidden="true"></span> Atendemos ahora — Respondemos en minutos';
+      } else {
+        badge.className = 'avail-badge closed';
+        var nextOpen = day === 0 ? 'mañana lunes' : (hour >= 20 ? 'mañana' : 'hoy');
+        if (day === 6 && hour >= 20) nextOpen = 'el lunes';
+        badge.innerHTML = '<span class="avail-dot" aria-hidden="true"></span> Dejá tu consulta — Respondemos ' + nextOpen + ' a las 7hs';
+      }
+    } catch(e) {
+      badge.className = 'avail-badge open';
+      badge.innerHTML = '<span class="avail-dot" aria-hidden="true"></span> Lun a Sáb 7 a 20hs — Respondemos el mismo día';
+    }
+  }
+
+  // ===== HISTORY API (botón atrás del navegador) =====
+  function pushStep(step) {
+    history.pushState({ step: step }, '', '');
+  }
+
+  window.addEventListener('popstate', function(e) {
+    if (e.state && e.state.step) {
+      goToStep(e.state.step, true);
+    } else {
+      goToStep(1, true);
+    }
   });
 
+  // ===== INIT =====
+  window.addEventListener('load', function() {
+    track('funnel_inicio', { step: 1 });
+    updateAvailability();
+    pushStep(1);
+    initOptionClicks();
+    initOtroBarrio();
+    initBackButtons();
+  });
+
+  // ===== EVENT DELEGATION PARA OPTIONS =====
+  function initOptionClicks() {
+    document.addEventListener('click', function(e) {
+      var btn = e.target.closest('.option');
+      if (!btn) return;
+      var key = btn.getAttribute('data-key');
+      var value = btn.getAttribute('data-value');
+      if (key && value) selectOption(btn, key, value);
+    });
+  }
+
+  // ===== OTRO BARRIO =====
+  function initOtroBarrio() {
+    var input = document.getElementById('otroBarrioInput');
+    input.addEventListener('input', function() {
+      var val = input.value.trim();
+      if (val.length >= 2) {
+        answers.q2 = val;
+        document.getElementById('btn2').disabled = false;
+      } else {
+        document.getElementById('btn2').disabled = true;
+      }
+    });
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && input.value.trim().length >= 2) {
+        answers.q2 = input.value.trim();
+        goToStep(3);
+      }
+    });
+  }
+
+  // ===== BOTONES VOLVER =====
+  function initBackButtons() {
+    var backs = document.querySelectorAll('.btn-back');
+    backs[0].addEventListener('click', function() { goToStep(1); });
+    backs[1].addEventListener('click', function() { goToStep(2); });
+
+    document.getElementById('btn1').addEventListener('click', function() { goToStep(2); });
+    document.getElementById('btn2').addEventListener('click', function() { goToStep(3); });
+    document.getElementById('btn3').addEventListener('click', function() { showSuccess(); });
+  }
+
+  // ===== SELECCIÓN DE OPCIONES =====
   function selectOption(el, key, value) {
     var container = el.closest('.options');
     var opts = container.querySelectorAll('.option');
     for (var i = 0; i < opts.length; i++) {
       opts[i].classList.remove('selected');
       opts[i].setAttribute('aria-checked', 'false');
+      opts[i].setAttribute('tabindex', '-1');
     }
     el.classList.add('selected');
     el.setAttribute('aria-checked', 'true');
+    el.setAttribute('tabindex', '0');
+
+    // Manejo especial para "Otro barrio"
+    if (key === 'q2' && value === '__otro__') {
+      document.getElementById('otroInputWrap').classList.add('visible');
+      var otroInput = document.getElementById('otroBarrioInput');
+      setTimeout(function() { otroInput.focus(); }, 100);
+      answers.q2 = otroInput.value.trim();
+      document.getElementById('btn2').disabled = answers.q2.length < 2;
+      return;
+    } else if (key === 'q2') {
+      document.getElementById('otroInputWrap').classList.remove('visible');
+    }
+
     answers[key] = value;
+
     if (key === 'q1') {
       document.getElementById('btn1').disabled = false;
       track('servicio_seleccionado', { servicio: value });
+      setTimeout(function() { goToStep(2); }, 550);
+    }
+    if (key === 'q2') {
+      document.getElementById('btn2').disabled = false;
+      setTimeout(function() { goToStep(3); }, 550);
     }
     if (key === 'q3') {
       document.getElementById('btn3').disabled = false;
       track('urgencia_seleccionada', { urgencia: value });
+      setTimeout(function() { showSuccess(); }, 550);
     }
   }
 
-  function checkQ2() {
-    var val = document.getElementById('q2input').value.trim();
-    answers.q2 = val;
-    document.getElementById('btn2').disabled = val.length < 2;
-  }
-
-  function goToStep(step) {
+  // ===== NAVEGACIÓN ENTRE PASOS =====
+  function goToStep(step, fromPopstate) {
+    currentStep = step;
+    if (!fromPopstate) pushStep(step);
     track('funnel_paso', { step: step });
+
     var steps = ['step1','step2','step3'];
     for (var i = 0; i < steps.length; i++) {
       document.getElementById(steps[i]).classList.add('hidden');
     }
+    document.getElementById('stepSuccess').classList.add('hidden');
+    document.getElementById('reassurance').classList.remove('hidden');
+
     var dotIds = ['dot1','dot2','dot3'];
     var lineIds = ['line1','line2'];
     for (var i = 0; i < dotIds.length; i++) {
       var d = document.getElementById(dotIds[i]);
       d.classList.remove('active','done');
       d.removeAttribute('aria-current');
-      if (i < step - 1) { d.classList.add('done'); d.textContent = '✓'; }
+      if (i < step - 1) { d.classList.add('done'); d.textContent = '\u2713'; }
       else if (i === step - 1) { d.classList.add('active'); d.textContent = i + 1; d.setAttribute('aria-current', 'step'); }
       else { d.textContent = i + 1; }
     }
@@ -613,31 +818,39 @@
     var indicator = document.getElementById('stepIndicator');
     indicator.setAttribute('aria-valuenow', step);
     indicator.setAttribute('aria-label', 'Progreso del formulario: paso ' + step + ' de 3');
+    document.getElementById('liveRegion').textContent = 'Paso ' + step + ' de 3';
 
     var target = document.getElementById('step' + step);
     if (target) {
       target.classList.remove('hidden');
       setTimeout(function() { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
       setTimeout(function() {
-        var firstInput = target.querySelector('.option, .text-input');
+        var firstInput = target.querySelector('.option[tabindex="0"], .text-input');
         if (firstInput) firstInput.focus();
       }, 400);
     }
   }
 
+  // ===== ÉXITO (sin window.open para evitar popup blocker) =====
   function showSuccess() {
     var servicio = answers.q1 || 'consulta';
     var barrio   = answers.q2 || 'Jose C. Paz';
     var cuando   = answers.q3 || 'pronto';
     var msg = encodeURIComponent('Hola! Consulto por: ' + servicio + '.\nBarrio: ' + barrio + '.\nCuando: ' + cuando + '.');
-    document.getElementById('waLink').href = 'https://wa.me/' + PHONE + '?text=' + msg;
+    var waUrl = 'https://wa.me/' + PHONE + '?text=' + msg;
+    document.getElementById('waLink').href = waUrl;
+
     track('whatsapp_click', { servicio: servicio, barrio: barrio, urgencia: cuando });
+
+    currentStep = 4;
+    pushStep(4);
+
     var dotIds = ['dot1','dot2','dot3'];
     for (var i = 0; i < dotIds.length; i++) {
       var d = document.getElementById(dotIds[i]);
       d.classList.remove('active');
       d.classList.add('done');
-      d.textContent = '✓';
+      d.textContent = '\u2713';
     }
     document.getElementById('line1').classList.add('done');
     document.getElementById('line2').classList.add('done');
@@ -649,12 +862,38 @@
     setTimeout(function() { document.getElementById('waLink').focus(); }, 500);
   }
 
-  // Keyboard navigation for options
+  // ===== NAVEGACIÓN CON FLECHAS EN RADIOGROUPS =====
   document.addEventListener('keydown', function(e) {
-    if (e.target.classList.contains('option') && (e.key === 'Enter' || e.key === ' ')) {
+    var target = e.target;
+    if (!target.classList.contains('option')) return;
+
+    if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      e.target.click();
+      target.click();
+      return;
     }
+
+    var isArrow = e.key === 'ArrowDown' || e.key === 'ArrowUp' ||
+                  e.key === 'ArrowRight' || e.key === 'ArrowLeft';
+    if (!isArrow) return;
+    e.preventDefault();
+
+    var group = target.closest('[role="radiogroup"]');
+    if (!group) return;
+    var opts = Array.prototype.slice.call(group.querySelectorAll('.option'));
+    var idx = opts.indexOf(target);
+    if (idx === -1) return;
+
+    var next;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+      next = idx + 1 >= opts.length ? 0 : idx + 1;
+    } else {
+      next = idx - 1 < 0 ? opts.length - 1 : idx - 1;
+    }
+
+    opts[idx].setAttribute('tabindex', '-1');
+    opts[next].setAttribute('tabindex', '0');
+    opts[next].focus();
   });
 </script>
 </body>
